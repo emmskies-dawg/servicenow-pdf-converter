@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8sbl)3b2j#%0t)=2ercue8s@h+tgd!9b#(1fvyltl2(wyi2ac4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['servicenow-pdf-converter.up.railway.app']
 
 
 # Application definition
