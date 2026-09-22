@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ServiceNow PDF to Excel</title>
+</head>
+<body>
+    <h1>Convert ServiceNow PDF to Excel</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html>

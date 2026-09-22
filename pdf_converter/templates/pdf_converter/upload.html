@@ -1,0 +1,277 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ServiceNow PDF to Excel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #31333F;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 3rem 2rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #0e1117;
+        }
+
+        .instructions {
+            background-color: #f0f7ff;
+            border: 1px solid #c6e0ff;
+            border-radius: 0.75rem;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .instructions h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 0.75rem 0;
+            color: #0e1117;
+        }
+
+        .instructions ol {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .instructions li {
+            font-size: 0.9rem;
+            color: #31333F;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .instructions li:last-child {
+            margin-bottom: 0;
+        }
+
+        .instructions code {
+            background-color: #e3edfa;
+            padding: 0.1rem 0.35rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        .example-image {
+            width: 100%;
+            border: 1px solid #e6e6e6;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .error {
+            background-color: #fff0f0;
+            border: 1px solid #ffb3b3;
+            color: #b00020;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        form {
+            border: 1px solid #e6e6e6;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            background-color: #fafafa;
+        }
+
+        label.field-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #31333F;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Hide the real file input entirely */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Styled drop-zone that stands in for the file input */
+        .dropzone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            border: 1.5px dashed #b0b0b0;
+            border-radius: 0.5rem;
+            background-color: #ffffff;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .dropzone:hover {
+            border-color: #FF4B4B;
+            background-color: #fff8f8;
+        }
+
+        .dropzone.dragover {
+            border-color: #FF4B4B;
+            background-color: #fff0f0;
+        }
+
+        .dropzone-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dropzone-text {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .dropzone-subtext {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+
+        .filename {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #FF4B4B;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        button[type="submit"] {
+            background-color: #FF4B4B;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.75rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #e13a3a;
+        }
+
+        button[type="submit"]:active {
+            background-color: #c73030;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Convert ServiceNow PDF to Excel</h1>
+
+        <div class="instructions">
+            <h2>How to use</h2>
+            <ol>
+                <li>Navigate to the website page with your ServiceNow ticket <code>Activity</code> tab displayed.</li>
+                <li>If on PC, press <code>Ctrl+P</code> to print the page. Save it as a PDF.</li>
+                <li>Upload the PDF to this site.</li>
+                <li>Press <code>Convert</code></li>
+            </ol>
+        </div>
+
+        <img src="{% static 'pdf_converter/images/pdf_example.png' %}" alt="Example of the Activity tab to print" class="example-image">
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label class="field-label" for="id_pdf_file">Select a ServiceNow PDF</label>
+
+            <label for="id_pdf_file" class="dropzone" id="dropzone">
+                <div class="dropzone-icon" id="dropzone-icon">📄</div>
+                <div class="dropzone-text" id="dropzone-text">Drag and drop file here, or click to browse</div>
+                <div class="dropzone-subtext" id="dropzone-subtext">PDF files only</div>
+                <div class="filename" id="filename-display"></div>
+            </label>
+
+            {{ form.pdf_file }}
+
+            <button type="submit">Convert</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('id_pdf_file');
+        const filenameDisplay = document.getElementById('filename-display');
+        const dropzoneIcon = document.getElementById('dropzone-icon');
+        const dropzoneText = document.getElementById('dropzone-text');
+        const dropzoneSubtext = document.getElementById('dropzone-subtext');
+
+        function showSelectedFile(file) {
+            filenameDisplay.textContent = `✓ ${file.name}`;
+            filenameDisplay.style.display = 'block';
+            dropzoneText.textContent = "File selected:";
+        }
+
+        function resetDropzone() {
+            dropzoneIcon.style.display = '';
+            dropzoneText.style.display = '';
+            dropzoneSubtext.style.display = '';
+            dropzoneText.textContent = "Drag and drop file here, or click to browse";
+            filenameDisplay.style.display = 'none';
+            filenameDisplay.textContent = '';
+        }
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                showSelectedFile(fileInput.files[0]);
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+            });
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                showSelectedFile(files[0]);
+            }
+        });
+
+        // Only clear the dropzone back to its default state when Convert is pressed
+        form.addEventListener('submit', () => {
+            resetDropzone();
+        });
+    </script>
+</body>
+</html>
