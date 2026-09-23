@@ -136,3 +136,7 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://servicenow-pdf-converter.up.railway.app/",
+]
